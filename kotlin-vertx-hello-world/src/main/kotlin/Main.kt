@@ -3,6 +3,7 @@
  */
 
 import io.vertx.core.AbstractVerticle
+import io.vertx.core.DeploymentOptions
 import io.vertx.core.Vertx
 import io.vertx.ext.web.Router
 
@@ -23,16 +24,10 @@ class HelloWorldVerticle: AbstractVerticle() {
     }
 }
 
-fun processors(body: () -> Unit) {
-    IntRange(0, Runtime.getRuntime().availableProcessors()).forEach { body }
-}
-
 fun main(args: Array<String>) {
     val vertx = Vertx.vertx()
+    val options = DeploymentOptions().setInstances(Runtime.getRuntime().availableProcessors())
 
-    // Deploy a verticle per thread
-    processors {
-        vertx.deployVerticle(HelloWorldVerticle())
-    }
+    vertx.deployVerticle(HelloWorldVerticle(), options)
 }
 
